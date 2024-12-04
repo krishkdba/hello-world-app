@@ -19,13 +19,11 @@ pipeline {
         }
         stage('Run Docker Container') {
             steps {
-                script {
-                    // Stop and remove the container if it already exists
-                    bat """
-                    docker ps -q --filter "name=${CONTAINER_NAME}" | grep -q . && docker stop ${CONTAINER_NAME} && docker rm ${CONTAINER_NAME} || true
-                    docker run -d -p 5000:5000 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}
-                    """
-                }
+                bat """
+                docker ps -q --filter "name=${CONTAINER_NAME}" | findstr . && docker stop ${CONTAINER_NAME} && docker rm ${CONTAINER_NAME} || echo Container not running.
+                docker run -d -p 5000:5000 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}
+                """
+            }
             }
         }
     }
